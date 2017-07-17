@@ -10,9 +10,26 @@
   <h1>Video Info in Electron</h1>
   <form action="">
     <div>
-      <label for="">請上傳影片：</label>
-      <input type="file" accept="video/*" />
+      <label for="">請上傳影片：
+        <input type="file" accept="video/*" />
+      </label>
     </div>
+    <button type="submit">Get Info</button>
   </form>
+  <h1 class="show-duration"></h1>
+  <script>
+    const electron = require('electron');
+    const { ipcRenderer } = electron;
+
+    document.querySelector('form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const { path } = document.querySelector('input').files[0];
+      ipcRenderer.send('video:submit', path);
+    });
+
+    ipcRenderer.on('video:metadata', (evt, duration) => {
+      document.querySelector('.show-duration').innerHTML = `Video duration: ${duration} seconds`;
+    });
+  </script>
 </body>
 </html>
